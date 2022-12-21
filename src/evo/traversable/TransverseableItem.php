@@ -42,7 +42,7 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
      *
      * @param mixed $key - string or delimted string or array of keys to transverse
      * @param mixed|null $defualt - a default value to return
-     * @param bool|$extend - return as a LibConfigItem
+     * @param bool|$extend - return as a TransverseableItem
      * @return mixed|TransverseableItem
      */
     public function get($key = null, $defualt=null, $extend=false) {    
