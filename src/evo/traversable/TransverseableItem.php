@@ -1,7 +1,6 @@
 <?php
 namespace evo\transversable;
 
-
 /**
  * @author hdurham
  */

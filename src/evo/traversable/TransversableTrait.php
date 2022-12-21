@@ -151,5 +151,4 @@ trait TransversableTrait{
         }
     }
     
-    
 }

@@ -1,6 +1,7 @@
 <?php
 namespace evo\transversable;
 
+
 interface TransversableInterface{
  
     /**
