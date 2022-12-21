@@ -20,8 +20,7 @@
 		"issues" : "https://github.com/ArtisticPhoenix/Transversable/issues"
 	},
 	"require" : {
-		"php" : ">=5.6",
-		"evo/patterns" : "~1.0"
+		"php" : ">=5.6"
 	},
 	"type" : "library",
 	"authors" : [{
