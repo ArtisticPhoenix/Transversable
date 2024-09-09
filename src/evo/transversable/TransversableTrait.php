@@ -1,10 +1,12 @@
 <?php
 namespace evo\transversable;
 
+use evo\exception as E;
+
 /**
  * Methods for key transversal of set, get, isset, unset
- * These methods are not inteneded to be called externally to the class.  
- * Instead impliment the TransverableInterface which is for public consumption
+ * These methods are not intended to be called externally to the class.
+ * Instead, implement the TransverableInterface which is for public consumption
  * 
  * For license information please view the LICENSE file included with this source code.
  *
@@ -16,52 +18,44 @@ trait TransversableTrait{
     
     /**
      * 
-     * @var string - a list of symbols keys can be split on ( in PHP dots arn't allowed in Super Globals, so it's a good choice as a seperator )
+     * @var string - a list of symbols keys can be split on ( in PHP dots aren't allowed in Super Globals, so it's a good choice as a separator )
      */
-    protected static $DELIMITER = '.';
+    protected static string $DELIMITER = '.';
 
     /**
      * Split the key into an array And/OR normalize to an array
      *
-     * @param mixed $key - string or delimted string or array of keys to transverse
+     * @param string|array $key - delimited string or array of keys to transverse
      * @return array
+     * @throws E\InvalidArgumentException
      */
-    private static function transversableSplitKeys($key){
-        if(is_null($key)) return null;
-        
+    private static function transversableSplitKeys(string|array $key): array{
         if(is_array($key)){
-            //check for multi-dimensional keys ( which is not supported )
+            //check for multidimensional keys ( which is not supported )
             if(count($key) != count($key,COUNT_RECURSIVE)){
-                print_rr($key);
-                throw new \Exception('invalid transversable key type['.gettype($key).']');
+                throw new E\InvalidArgumentException("Multidimensional transversable array keys are not supported.");
             }
-            
             return $key;
         }
-        
-        switch (gettype($key)){
-            case 'boolean':
-            case 'integer':     
-            case 'double':    
-                return [$key];  
-                //exit method
-            case 'string':
-                return preg_split('/['.preg_quote(static::$DELIMITER,'/').']+/', $key, -1, PREG_SPLIT_NO_EMPTY);
-                //exit method
-        } //end switch
 
-        throw new \Exception('invalid transversable key type['.gettype($key).']');
+        return preg_split(
+            '/['.preg_quote(static::$DELIMITER,'/').']+/',
+            $key,
+            -1,
+            PREG_SPLIT_NO_EMPTY
+        );
     }
-    
+
     /**
-     *
      * check if an attribute exists
      *
-     * @param mixed $key - string or delimted string or array of keys to transverse
+     * @param string|array $key - string or delimited string or array of keys to transverse
      * @param array $array - the array to transverse
      * @return bool
+     *
+     * @throws E\InvalidArgumentException
      */
-    protected static function transversableIsset($key, array $array){
+    protected static function transversableIsset(string|array $key, array $array): bool {
         $keys = self::transversableSplitKeys($key);
 
         foreach($keys as $key){
@@ -72,17 +66,23 @@ trait TransversableTrait{
         
         return true;
     }
-    
+
     /**
+     * set a value
      *
-     * set an attribute
-     *
-     * @param mixed $key - string or delimted string or array of keys to transverse
+     * @param string|array $key - string or delimited string or array of keys to transverse
      * @param mixed $value - the value to add to array
      * @param array $array - the array to modify
-     * @param bool $overwrite - overwrite all child arrays (usefull for numeric indexes)
+     * @param bool $overwrite - overwrite all child arrays (useful for numeric indexes)
+     *
+     * @return void
      */
-    protected static function transversableSet($key, $value, array &$array, $overwrite=false){  
+    protected static function transversableSet(
+        string|array $key,
+        mixed $value,
+        array &$array,
+        bool $overwrite=false
+    ): void {
         $keys = self::transversableSplitKeys($key);
         $key = array_shift($keys) ?? 0;
         
@@ -97,9 +97,6 @@ trait TransversableTrait{
                     }
                break;
                default:
-                   if(is_array($key)) throw new \Exception();
-                   
-                   
                     $array[$key] = $value;
             }
         }else{
@@ -108,22 +105,28 @@ trait TransversableTrait{
             self::transversableSet($keys, $value, $array[$key], $overwrite); //recursive
         }
     }
-    
+
     /**
-     * Get attribute
+     * Get a value
      *
-     * @param mixed $key - string or delimted string or array
-     * @param array $array - the arry to get from
+     * @param string|array $key - string or delimited string or array
+     * @param array $array - the array to get from
      * @param mixed $default - return this value when not set (applies to all keys if multiple)
      * @return mixed
+     * @throws E\InvalidArgumentException
      */
-    protected static function transversableGet($key, array $array, $default=null){        
+    protected static function transversableGet(
+        string|array $key,
+        array $array,
+        mixed $default=null
+    ): mixed {
         $keys = self::transversableSplitKeys($key);
 
         foreach ($keys as $key){
             if(!isset($array[$key])){
                 if(is_callable($default)){
-                    $default = $default(...array_slice(func_get_args(), 0, 2)); //$key, $array - without default
+                    //$key, $array - without default
+                    $default = $default(...array_slice(func_get_args(), 0, 2));
                 }
                 return $default;
             }
@@ -133,14 +136,18 @@ trait TransversableTrait{
         
         return $array;
     }
-    
+
     /**
-     * remove an item from $array by $key
+     * Remove an item from $array by $key
      *
-     * @param mixed $key - string or delimted string or array
+     * @param string|array $key - string or delimited string or array
      * @param array $array - the array to modify
+     *
+     * @return void
+     *
+     * @throws E\InvalidArgumentException
      */
-    protected static function transversableUnset($key, array &$array){
+    protected static function transversableUnset(string|array $key, array &$array): void{
         $keys = self::transversableSplitKeys($key);
         $key = array_shift($keys);
         

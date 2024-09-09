@@ -1,24 +1,25 @@
 <?php
 namespace evo\transversable;
 
+use evo\exception as E;
+
 /**
  * @author hdurham
  */
-class TransverseableItem implements TransversableInterface, \ArrayAccess{  
-    
+class TransverseableItem implements TransversableInterface, \ArrayAccess{
     use TransversableTrait;
     
     /**
      *
-     * @var array
+     * @var mixed
      */
-    protected $items = [];
-    
-    
+    protected mixed $items = null;
+
     /**
-     * @todo enviroments
+     * @param mixed|null $data
+     *
      */
-    public function __construct($data=null) {
+    public function __construct(mixed $data=null) {
         if(null !== $data){
             if(is_array($data)){
                 $this->build($data, true);
@@ -27,38 +28,43 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
             }
         }
     }
-    
+
     /**
-     * Set multiple values
+     * @param array $data
+     * @param bool $overwrite
+     * @return $this
      *
-     * @param array $data - array of key value pairs to set
-     * @param bool $overwrite - overwrite  ( replace or merge with )
      */
-    public function build(array $data, $overwrite=true){
-        foreach ($data as $key => $item) $this->set($key, $item, $overwrite);
+    public function build(array $data, bool $overwrite=true): static
+    {
+        foreach ($data as $key => $item)
+            $this->set($key, $item, $overwrite);
+
+        return $this;
     }
- 
+
     /**
-     *
-     * @param mixed $key - string or delimted string or array of keys to transverse
-     * @param mixed|null $defualt - a default value to return
-     * @param bool|$extend - return as a TransverseableItem
-     * @return mixed|TransverseableItem
+     * @param array|string|null $key
+     * @param mixed|null $default
+     * @param bool $extend
+     * @return mixed
      */
-    public function get($key = null, $defualt=null, $extend=false) {    
-        $value = null !== $key && is_array($this->items) ? self::transversableGet($key, $this->items, $defualt) : $this->items;
-        return $value && $extend ? new TransverseableItem($value) : $value;
+    public function get(array|string $key = null, mixed $default=null, bool $extend=false): mixed
+    {
+        $value = null !== $key && is_array($this->items) ? self::transversableGet($key, $this->items, $default) : $this->items;
+        return $value && $extend ? new static($value) : $value;
     }
-    
+
     /**
-     *
-     * set a config value
-     *
-     * @param mixed $key - string or delimted string or array of keys to transverse
-     * @param mixed $value - the value to add to array
-     * @param bool $overwrite - overwrite  ( replace or merge with )
+     * @param array|string $key
+     * @param mixed $value
+     * @param bool $overwrite
+     * @return void
+     * @throws \Exception
      */
-    public function set($key, $value, $overwrite=true) {       
+    public function set(array|string $key, mixed $value, bool $overwrite=true): void
+    {
+
         if(!is_array($this->items)){
             $this->items = [];
         }
@@ -76,10 +82,11 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
     
     /**
      * Check if a config value is set
-     * @param mixed $key - string or delimted string or array of keys to transverse
+     * @param array|string $key - string or delimited string or array of keys to transverse
      * @return bool
      */
-    public function isset($key) {
+    public function isset(array|string $key): bool
+    {
         if(!is_array($this->items)){
             return !is_null($this->items);
         }
@@ -88,32 +95,36 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
     }
     
     /**
-     * Unset a confg value - ( this is only temporary and notpersitant)
-     * @param mixed $key - string or delimted string or array of keys to transverse
+     * Unset a value
+     * @param array|string $key - string or delimited string or array of keys to transverse
      */
-    public function unset($key) {
+    public function unset(array|string $key): void
+    {
         if(!is_array($this->items)){
             $this->items = null;
         }else{
             self::transversableUnset($key, $this->items);
         }  
     }
-    
+
     /**
-     *
-     * @param string $offset
-     * @return mixed
+     * @param string $name
+     * @return TransverseableItem|mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed
+    {
         return $this->get($name);
     }
     
     /**
      *
-     * @param string $offset
-     * @return mixed
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return void
      */
-    public function __set($name, $value) {
+    public function __set(string $name, mixed $value): void
+    {
         $this->set($name,$value);
     }
     
@@ -122,16 +133,17 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
      * @param string $name
      * @return bool
      */
-    public function __isset($name) {
+    public function __isset(string $name): bool
+    {
         return $this->isset($name);
     }
-    
-    
+
     /**
      *
      * @param string $name
      */
-    public function __unset($name) {
+    public function __unset(string $name): void
+    {
         $this->unset($name);
     }
     
@@ -140,7 +152,7 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
      * @param string $offset
      * @return mixed
      */
-    public function offsetGet($offset)
+    #[\Override] public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
@@ -150,7 +162,7 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
      * @param string $offset
      * @param mixed $value
      */
-    public function offsetSet($offset, $value)
+    #[\Override] public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->set($offset, $value);
     }
@@ -160,7 +172,7 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
      * @param string $offset
      * @return boolean
      */
-    public function offsetExists($offset)
+    #[\Override] public function offsetExists(mixed $offset): bool
     {
         return $this->isset($offset);
     }
@@ -169,17 +181,27 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
      * 
      * @param string $offset
      */
-    public function offsetUnset($offset)
+    #[\Override] public function offsetUnset(mixed $offset): void
     {
         $this->unset($offset);
     }
 
     /**
-     * you can use this method as the default when you wish to throw an exception for an unknown key
+     * @return mixed
      */
-    public static function throwUnkownVariable() {
+    #[\Override] public function getAll(): mixed
+    {
+        return $this->items;
+    }
+
+    /**
+     * You can use this callback method as the default when you wish to throw an evo\OutOfBoundsException for an unknown key
+     *
+     * @return callable
+     */
+    public static function throwUnkownVariable(): callable{
         return function($key) {
-            throw new \Exception("Unknown transversable item [".$key."]");
+            throw new E\OutOfBoundsException("Unknown transversable item [".$key."]");
         };
     }
 

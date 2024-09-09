@@ -8,25 +8,23 @@
 	"autoload" : {
 		"psr-4" : {
 			"evo\\" : [
-				"src/evo",
-				"src/evo/transverse"
+				"src/evo"
 			]
 		}
 	},
 	"support" : {
-		"email" : "artisticphoenix@gmail.com",
 		"wiki" : "https://github.com/ArtisticPhoenix/Transversable/wiki",
 		"source" : "https://github.com/ArtisticPhoenix/Transversable.git",
 		"issues" : "https://github.com/ArtisticPhoenix/Transversable/issues"
 	},
 	"require" : {
-		"php" : ">=5.6"
+		"php" : ">=8.3",
+		"evo/exception" : "@stable"
 	},
 	"type" : "library",
 	"authors" : [{
 			"name" : "Hugh Durham III",
-			"email" : "artisticphoenix@gmail.com",
-			"homepage" : "http://www.artisticphoenix.com",
+			"homepage" : "https://github.com/ArtisticPhoenix/Transversable",
 			"role" : "Author"
 		}
 	]
