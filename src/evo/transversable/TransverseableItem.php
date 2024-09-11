@@ -199,8 +199,8 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
      *
      * @return callable
      */
-    public static function throwUnkownVariable(): callable{
-        return function($key) {
+    public static function throwUnknownVariable(): callable{
+        return static function($key) {
             throw new E\OutOfBoundsException("Unknown transversable item [".$key."]");
         };
     }
