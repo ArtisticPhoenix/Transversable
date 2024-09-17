@@ -10,7 +10,7 @@ namespace evo\transversable;
  *
  * @author HughDurham {ArtisticPhoenix}
  * @package
- * @version 1.0.0
+ * @version 2.0.0
  */
 interface TransversableInterface{
     
