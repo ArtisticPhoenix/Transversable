@@ -60,7 +60,6 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
      * @param mixed $value
      * @param bool $overwrite
      * @return void
-     * @throws \Exception
      */
     public function set(array|string $key, mixed $value, bool $overwrite=true): void
     {
@@ -193,6 +192,4 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
     {
         return $this->items;
     }
-
-
 }
