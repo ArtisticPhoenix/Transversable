@@ -70,4 +70,10 @@ interface TransversableInterface{
      * @param mixed $key - string or delimited string or array of keys to transverse
      */
     public function unset(array|string $key): void;
+
+    /**
+     * Use as a default to throw a missing key exception
+     * @return callable
+     */
+    public static function throwOutOfBoundsException(): callable;
 }

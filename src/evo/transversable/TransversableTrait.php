@@ -157,5 +157,11 @@ trait TransversableTrait{
             self::transversableUnset($keys, $array[$key]); //recursive
         }
     }
+
+    public static function throwOutOfBoundsException(): callable{
+        return static function($key) {
+            throw new E\OutOfBoundsException("Unknown transversable item [".$key."]");
+        };
+    }
     
 }

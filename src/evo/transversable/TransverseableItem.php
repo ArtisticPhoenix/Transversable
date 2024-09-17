@@ -194,15 +194,5 @@ class TransverseableItem implements TransversableInterface, \ArrayAccess{
         return $this->items;
     }
 
-    /**
-     * You can use this callback method as the default when you wish to throw an evo\OutOfBoundsException for an unknown key
-     *
-     * @return callable
-     */
-    public static function throwOutOfBoundsException(): callable{
-        return static function($key) {
-            throw new E\OutOfBoundsException("Unknown transversable item [".$key."]");
-        };
-    }
 
 }
