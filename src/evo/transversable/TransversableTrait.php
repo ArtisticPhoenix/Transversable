@@ -12,7 +12,7 @@ use evo\exception as E;
  *
  * @author HughDurham {ArtisticPhoenix}
  * @package
- * @version 1.0.0
+ * @version 2.1.0
  */
 trait TransversableTrait{
     
@@ -158,9 +158,13 @@ trait TransversableTrait{
         }
     }
 
-    public static function throwOutOfBoundsException(): callable{
-        return static function($key) {
-            throw new E\OutOfBoundsException("Unknown transversable item [".$key."]");
+    /**
+     * @param string $message
+     * @return callable
+     */
+    public static function throwOutOfBoundsException(string $message=''): callable{
+        return static function($key) use ($message){
+            throw new E\OutOfBoundsException("Unknown transversable item [".$key."].{$message}");
         };
     }
     

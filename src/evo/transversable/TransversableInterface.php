@@ -10,7 +10,7 @@ namespace evo\transversable;
  *
  * @author HughDurham {ArtisticPhoenix}
  * @package
- * @version 2.0.0
+ * @version 2.1.0
  */
 interface TransversableInterface{
     
@@ -73,7 +73,8 @@ interface TransversableInterface{
 
     /**
      * Use as a default to throw a missing key exception
+     * @param string $message - extra information to added to the exception message
      * @return callable
      */
-    public static function throwOutOfBoundsException(): callable;
+    public static function throwOutOfBoundsException(string $message=''): callable;
 }

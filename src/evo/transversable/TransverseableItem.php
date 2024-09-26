@@ -5,6 +5,7 @@ use evo\exception as E;
 
 /**
  * @author hdurham
+ * @version 2.0.0
  */
 class TransverseableItem implements TransversableInterface, \ArrayAccess{
     use TransversableTrait;
