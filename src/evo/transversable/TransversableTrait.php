@@ -127,7 +127,7 @@ trait TransversableTrait{
             if(!isset($array[$key])){
                 if(is_callable($default)){
                     //$key, $array - without default
-                    $default = $default(...array_slice(func_get_args(), 0, 2));
+                    $default = call_user_func_array($default, array_slice(func_get_args(), 0, 2));
                 }
                 return $default;
             }
