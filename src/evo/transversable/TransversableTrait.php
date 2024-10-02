@@ -17,19 +17,20 @@ use evo\exception as E;
 trait TransversableTrait{
     
     /**
-     * 
-     * @var string - a list of symbols keys can be split on ( in PHP dots aren't allowed in Super Globals, so it's a good choice as a separator )
+     * ( in PHP dots aren't allowed in Super Globals, so it's a good choice as a separator )
+     *
+     * @var string - a list of symbols that keys can be split on e.g. '.,-'
      */
     protected static string $DELIMITER = '.';
 
     /**
-     * Split the key into an array And/OR normalize to an array
+     * Normalize the transverse keys to an array
      *
-     * @param string|array $key - delimited string or array of keys to transverse
+     * @param string|array $key - delimited string (key0.key1.key2) or array of keys ([key0,key1,key2]) to transverse
      * @return array
      * @throws E\InvalidArgumentException
      */
-    private static function transversableSplitKeys(string|array $key): array{
+    protected static function transversableSplitKeys(string|array $key): array{
         if(is_array($key)){
             //check for multidimensional keys ( which is not supported )
             if(count($key) != count($key,COUNT_RECURSIVE)){
@@ -49,7 +50,7 @@ trait TransversableTrait{
     /**
      * check if an attribute exists
      *
-     * @param string|array $key - string or delimited string or array of keys to transverse
+     * @param string|array $key - delimited string (key0.key1.key2) or array of keys ([key0,key1,key2]) to transverse
      * @param array $array - the array to transverse
      * @return bool
      *
@@ -70,9 +71,9 @@ trait TransversableTrait{
     /**
      * set a value
      *
-     * @param string|array $key - string or delimited string or array of keys to transverse
+     * @param string|array $key - delimited string (key0.key1.key2) or array of keys ([key0,key1,key2]) to transverse
      * @param mixed $value - the value to add to array
-     * @param array $array - the array to modify
+     * @param array $array - - the array to modify (pass by reference)
      * @param bool $overwrite - overwrite all child arrays (useful for numeric indexes)
      *
      * @return void
@@ -109,7 +110,7 @@ trait TransversableTrait{
     /**
      * Get a value
      *
-     * @param string|array $key - string or delimited string or array
+     * @param string|array $key - delimited string (key0.key1.key2) or array of keys ([key0,key1,key2]) to transverse
      * @param array $array - the array to get from
      * @param mixed $default - return this value when not set (applies to all keys if multiple)
      * @return mixed
@@ -140,8 +141,8 @@ trait TransversableTrait{
     /**
      * Remove an item from $array by $key
      *
-     * @param string|array $key - string or delimited string or array
-     * @param array $array - the array to modify
+     * @param string|array $key - delimited string (key0.key1.key2) or array of keys ([key0,key1,key2]) to transverse
+     * @param array $array - the array to modify (pass by reference)
      *
      * @return void
      *
