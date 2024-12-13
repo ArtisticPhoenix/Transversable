@@ -4,7 +4,7 @@ namespace evo\transversable;
 /**
  *  Methods for key transversal of set, get, isset, unset
  *  These methods are not intended to be called externally to the class.
- *  Instead, implement the TransverableInterface which is for public consumption
+ *  Instead, implement the TransversableInterface which is for public consumption
  *
  *  For license information please view the LICENSE file included with this source code.
  *
