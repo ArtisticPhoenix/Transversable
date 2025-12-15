@@ -50,13 +50,13 @@ class TransversableItem implements TransversableInterface, \ArrayAccess{
     /**
      * @param array|string|null $key
      * @param mixed|null $default
-     * @param bool $extend
-     * @return mixed
+     * @param bool $extend - return a TransversableInterface
+     * @return string|int|float|bool|array|null|TransversableInterface
      */
-    public function get(array|string $key = null, mixed $default=null, bool $extend=false): mixed
+    public function get(array|string $key = null, mixed $default=null, bool $extend=false): string|int|float|bool|array|null|TransversableInterface
     {
         $value = null !== $key && is_array($this->items) ? self::transversableGet($key, $this->items, $default) : $this->items;
-        return $value && $extend ? new static($value) : $value;
+        return $extend ? new static($value) : $value;
     }
 
     /**
