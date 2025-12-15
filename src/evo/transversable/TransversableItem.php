@@ -41,8 +41,14 @@ class TransversableItem implements TransversableInterface, \ArrayAccess{
      */
     public function build(array $data, bool $overwrite=true): static
     {
-        foreach ($data as $key => $item)
-            $this->set($key, $item, $overwrite);
+        if(empty($data)){
+            if(!is_array($this->items)){
+                $this->items = [];
+            }
+        }else{
+            foreach ($data as $key => $item)
+                $this->set($key, $item, $overwrite);
+        }
 
         return $this;
     }
@@ -50,13 +56,13 @@ class TransversableItem implements TransversableInterface, \ArrayAccess{
     /**
      * @param array|string|null $key
      * @param mixed|null $default
-     * @param bool $extend - return a TransversableInterface
-     * @return string|int|float|bool|array|null|TransversableInterface
+     * @param bool $extend
+     * @return mixed
      */
-    public function get(array|string $key = null, mixed $default=null, bool $extend=false): string|int|float|bool|array|null|TransversableInterface
+    public function get(array|string $key = null, mixed $default=null, bool $extend=false): mixed
     {
         $value = null !== $key && is_array($this->items) ? self::transversableGet($key, $this->items, $default) : $this->items;
-        return $extend ? new static($value) : $value;
+        return $value && $extend ? new static($value) : $value;
     }
 
     /**
